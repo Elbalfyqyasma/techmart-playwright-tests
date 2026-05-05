@@ -1,5 +1,7 @@
 import { Page, Locator, expect } from "@playwright/test";
 import LoginPage from "./loginPage";
+import { error } from "node:console";
+import logger from "../utils/LoggerUtil";
 
 export default class HomePage {
   private readonly loginButton: Locator;
@@ -15,7 +17,13 @@ export default class HomePage {
   }
 
   async goToLoginPage(): Promise<LoginPage> {
-    await this.loginButton.click();
+    try {
+      await this.loginButton.click();
+      logger.info("Navigation to Login Page successful"); // ✅ only runs if click succeeded
+    } catch (error) {
+      logger.error(`Failed to navigate to Login Page: ${error}`); // ✅ only runs if click failed
+      throw error;
+    }
     return new LoginPage(this.page);
   }
 
